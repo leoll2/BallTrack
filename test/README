@@ -1,0 +1,14 @@
+This project is meant to perform Unit Testing and Coverage Testing on
+project 'swatch_lai_handcoded'.
+
+File main.c contains the tests to be executed by CUnit
+
+1) Compile with 'Build project'
+2) Execute the bin/main.exe file
+3) In Windows Powershell, move to this directory, and launch:
+   gcov build\swatch.c
+   and
+   gcov build\main.c
+   in order to perform coverage testing on the last execution
+4) The *.c.gcov files contain info about these results.
+

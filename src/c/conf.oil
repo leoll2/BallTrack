@@ -1,0 +1,89 @@
+/* conf.oil
+ * 
+ * Author: 2019 Leonardo Lai
+ */
+
+CPU mySystem {
+
+	OS myOs {
+		EE_OPT = "DEBUG";
+		
+		CPU_DATA = CORTEX_MX {
+			MODEL = M4;
+			APP_SRC = "adc.c";
+			APP_SRC = "controller.c";
+			APP_SRC = "field.c";
+			APP_SRC = "main.c";
+			APP_SRC = "pilot.c";
+			APP_SRC = "serial.c";
+			APP_SRC = "servo.c";
+			APP_SRC = "touch.c";
+			APP_SRC = "util.c";
+			COMPILER_TYPE = GNU;
+			MULTI_STACK = FALSE;
+		};
+		
+		EE_OPT = "__USE_SYSTICK__";
+
+		MCU_DATA = STM32 {
+			MODEL = STM32F4xx;
+		};
+
+		EE_OPT = "__ADD_LIBS__";
+		
+		LIB = ENABLE { NAME = "ST_CMSIS"; };
+		
+		LIB = ENABLE { 
+			NAME = "STM32F4XX_SPD";
+			STM32F4XX_SPD = ENABLE {
+				USEADC = TRUE;
+                USEDMA = TRUE;
+                USETIM = TRUE;
+                USEUSART = TRUE;
+            };
+		};
+		
+		LIB = ENABLE {
+			NAME = "STM32F4_DISCOVERY";
+			STM32F4_DISCOVERY = ENABLE {
+                USECOM = TRUE;
+                USELEDS = TRUE;
+			};
+		};
+		
+		STATUS = EXTENDED;
+		STARTUPHOOK = FALSE;
+		ERRORHOOK = FALSE;
+		SHUTDOWNHOOK = FALSE;
+		PRETASKHOOK = FALSE;
+		POSTTASKHOOK = FALSE;
+		USEGETSERVICEID = FALSE;
+		USEPARAMETERACCESS = FALSE;
+		USERESSCHEDULER = FALSE;
+
+		KERNEL_TYPE = FP;
+
+	};
+	
+	COUNTER counter;
+
+	ALARM AlarmController {
+		COUNTER = counter;
+		ACTION = ACTIVATETASK { TASK = TaskController; };
+	};
+	
+	TASK TaskController {
+		PRIORITY = 0x01;
+		AUTOSTART = FALSE;
+		STACK = SHARED;
+		ACTIVATION = 1;
+		SCHEDULE = FULL;
+	};
+	
+	
+	ISR systick_handler {
+		CATEGORY = 2;
+		ENTRY = "SYSTICK";
+		PRIORITY = 1;
+	};
+};
